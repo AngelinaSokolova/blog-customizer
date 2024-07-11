@@ -1,6 +1,6 @@
 import './styles/index.scss';
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties, useState, FormEvent } from 'react';
+import { StrictMode, CSSProperties, useState } from 'react';
 import { Article } from './components/article/Article';
 import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
 import { defaultArticleState } from './constants/articleProps';
@@ -11,15 +11,12 @@ const root = createRoot(domNode);
 
 const App = () => {
 	const [articleState, setArticleState] = useState(defaultArticleState);
-	const [formState, setFormState] = useState(defaultArticleState);
 
 	const resetFormState = () => {
-		setFormState(defaultArticleState);
 		setArticleState(defaultArticleState);
 	};
 
-	const applyState = (e: FormEvent) => {
-		e.preventDefault();
+	const applyState = (formState: typeof defaultArticleState) => {
 		setArticleState(formState);
 	};
 
@@ -28,16 +25,15 @@ const App = () => {
 			className={styles.main}
 			style={
 				{
-				  '--font-family': articleState.fontFamilyOption.value,
-				  '--font-size': articleState.fontSizeOption.value,
-				  '--font-color': articleState.fontColor.value,
-				  '--container-width': articleState.contentWidth.value,
-				  '--bg-color': articleState.backgroundColor.value,
+					'--font-family': articleState.fontFamilyOption.value,
+					'--font-size': articleState.fontSizeOption.value,
+					'--font-color': articleState.fontColor.value,
+					'--container-width': articleState.contentWidth.value,
+					'--bg-color': articleState.backgroundColor.value,
 				} as CSSProperties
 			}>
 			<ArticleParamsForm
-				state={formState}
-				setState={setFormState}
+				articleState={articleState}
 				resetStyles={resetFormState}
 				applyStyles={applyState}
 			/>

@@ -8,7 +8,6 @@ import { Separator } from '../separator';
 import styles from './ArticleParamsForm.module.scss';
 import { useState, useRef, FormEvent } from 'react';
 import { useOutsideClick } from './hooks/outsideClick';
-
 import {
 	OptionType,
 	backgroundColors,
@@ -20,38 +19,37 @@ import {
 } from 'src/constants/articleProps';
 
 type ArticleParamsFormProps = {
-	state: typeof defaultArticleState;
-	setState: React.Dispatch<React.SetStateAction<typeof defaultArticleState>>;
+	articleState: typeof defaultArticleState;
 	resetStyles: () => void;
-	applyStyles: (e: FormEvent) => void;
+	applyStyles: (formState: typeof defaultArticleState) => void;
 };
 
 export const ArticleParamsForm = ({
-	state,
-	setState,
+	articleState,
 	resetStyles,
 	applyStyles,
 }: ArticleParamsFormProps) => {
 	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+	const [formState, setFormState] = useState(articleState);
 
 	const handlerFontFamilyOption = (value: OptionType) => {
-		setState({ ...state, fontFamilyOption: value });
+		setFormState({ ...formState, fontFamilyOption: value });
 	};
 
 	const handlerFontColor = (value: OptionType) => {
-		setState({ ...state, fontColor: value });
+		setFormState({ ...formState, fontColor: value });
 	};
 
 	const handlerBackgroundColor = (value: OptionType) => {
-		setState({ ...state, backgroundColor: value });
+		setFormState({ ...formState, backgroundColor: value });
 	};
 
 	const handlerContentWidth = (value: OptionType) => {
-		setState({ ...state, contentWidth: value });
+		setFormState({ ...formState, contentWidth: value });
 	};
 
 	const handlerFontSizeOption = (value: OptionType) => {
-		setState({ ...state, fontSizeOption: value });
+		setFormState({ ...formState, fontSizeOption: value });
 	};
 
 	const handleArrowButtonClick = () => {
@@ -66,60 +64,73 @@ export const ArticleParamsForm = ({
 		onClose: handleArrowButtonClick,
 	});
 
-	return (
-		<div ref={formRef}>
-			<ArrowButton onClick={handleArrowButtonClick} isOpen={isMenuOpen} />
-			<aside
-				className={clsx(styles.container, {
-					[styles.container_open]: isMenuOpen,
-				})}>
-				<form className={styles.form} onSubmit={applyStyles}>
-					<Text as={'h2'} size={31} weight={800} uppercase={true}>
-						Задайте параметры
-					</Text>
-					<Select
-						selected={state.fontFamilyOption}
-						onChange={handlerFontFamilyOption}
-						options={fontFamilyOptions}
-						placeholder='Выберите шрифт'
-						title='шрифт'
-					/>
-					<RadioGroup
-						name='fontSize'
-						options={fontSizeOptions}
-						selected={state.fontSizeOption}
-						title='размер шрифта'
-						onChange={handlerFontSizeOption}
-					/>
-					<Select
-						selected={state.fontColor}
-						options={fontColors}
-						placeholder='Выберите цвет'
-						title='цвет шрифта'
-						onChange={handlerFontColor}
-					/>
-					<Separator />
-					<Select
-						selected={state.backgroundColor}
-						options={backgroundColors}
-						placeholder='Выберите цвет'
-						title='цвет фона'
-						onChange={handlerBackgroundColor}
-					/>
-					<Select
-						selected={state.contentWidth}
-						options={contentWidthArr}
-						placeholder='Выберите ширину'
-						title='ширина контента'
-						onChange={handlerContentWidth}
-					/>
+	const handleApplyState = (event: FormEvent) => {
+		event.preventDefault();
+		applyStyles({
+			fontFamilyOption: formState.fontFamilyOption,
+			fontColor: formState.fontColor,
+			backgroundColor: formState.backgroundColor,
+			contentWidth: formState.contentWidth,
+			fontSizeOption: formState.fontSizeOption,
+		});
+	};
 
-					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='reset' onClick={resetStyles} />
-						<Button title='Применить' type='submit' />
-					</div>
-				</form>
-			</aside>
-		</div>
+	return (
+		<main>
+			<div ref={formRef}>
+				<ArrowButton onClick={handleArrowButtonClick} isOpen={isMenuOpen} />
+				<aside
+					className={clsx(styles.container, {
+						[styles.container_open]: isMenuOpen,
+					})}>
+					<form className={styles.form} onSubmit={handleApplyState}>
+						<Text as={'h2'} size={31} weight={800} uppercase={true}>
+							Задайте параметры
+						</Text>
+						<Select
+							selected={formState.fontFamilyOption}
+							onChange={handlerFontFamilyOption}
+							options={fontFamilyOptions}
+							placeholder='Выберите шрифт'
+							title='шрифт'
+						/>
+						<RadioGroup
+							name='fontSize'
+							options={fontSizeOptions}
+							selected={formState.fontSizeOption}
+							title='размер шрифта'
+							onChange={handlerFontSizeOption}
+						/>
+						<Select
+							selected={formState.fontColor}
+							options={fontColors}
+							placeholder='Выберите цвет'
+							title='цвет шрифта'
+							onChange={handlerFontColor}
+						/>
+						<Separator />
+						<Select
+							selected={formState.backgroundColor}
+							options={backgroundColors}
+							placeholder='Выберите цвет'
+							title='цвет фона'
+							onChange={handlerBackgroundColor}
+						/>
+						<Select
+							selected={formState.contentWidth}
+							options={contentWidthArr}
+							placeholder='Выберите ширину'
+							title='ширина контента'
+							onChange={handlerContentWidth}
+						/>
+
+						<div className={styles.bottomContainer}>
+							<Button title='Сбросить' type='reset' onClick={resetStyles} />
+							<Button title='Применить' type='submit' />
+						</div>
+					</form>
+				</aside>
+			</div>
+		</main>
 	);
 };
