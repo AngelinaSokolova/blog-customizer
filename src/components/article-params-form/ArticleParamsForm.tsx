@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { Text } from 'components/text';
 import { Separator } from '../separator';
 import styles from './ArticleParamsForm.module.scss';
-import { useState, useRef, FormEvent } from 'react';
+import { useState, useRef, FormEvent, useEffect } from 'react';
 import { useOutsideClick } from './hooks/outsideClick';
 import {
 	OptionType,
@@ -32,6 +32,10 @@ export const ArticleParamsForm = ({
 	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 	const [formState, setFormState] = useState(articleState);
 
+	useEffect(() => {
+		setFormState(articleState);
+	}, [articleState]);
+
 	const handlerFontFamilyOption = (value: OptionType) => {
 		setFormState({ ...formState, fontFamilyOption: value });
 	};
@@ -54,7 +58,7 @@ export const ArticleParamsForm = ({
 
 	const handleArrowButtonClick = () => {
 		setIsMenuOpen(!isMenuOpen);
-	};
+	};  
 
 	const formRef = useRef<HTMLDivElement | null>(null);
 
